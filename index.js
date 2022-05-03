@@ -24,19 +24,64 @@ async function run() {
   try {
     await client.connect();
     const userCollection = client.db("warehouse").collection("userinfo");
+    const personalCollection = client.db("warehouse").collection("myitem");
+   
+
+
+   
+ 
+
+ 
 
     app.get("/userinfo", async (req, res) => {
+      // const email =req.query.email;
+      
       const query = {};
       const cursor = userCollection.find(query);
       const users = await cursor.toArray();
       res.send(users);
     });
+
+   
     app.post("/userinfo", async (req, res) => {
       const newService = req.body;
       const result = await userCollection.insertOne(newService);
       res.send(result);
     });
-    // get id
+
+
+     //myitem
+     app.get("/myitem", async (req, res) => {
+      const email =req.query.email;
+      
+      const query = {email:email};
+      const cursor = personalCollection.find(query);
+      const users = await cursor.toArray();
+      res.send(users);
+    });
+
+    app.post("/myitem", async (req, res) => {
+      const newService = req.body;
+      const result = await personalCollection.insertOne(newService);
+      res.send(result);
+    });
+
+    app.delete("/myitem/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await personalCollection.deleteOne(query);
+      res.send(result);
+    });
+
+
+    // app.get("/myitem/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const query = { _id: ObjectId(id) };
+    //   const result = await userCollection.findOne(query);
+    //   res.send(result);
+    // });
+
+   // get id
     app.delete("/userinfo/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
