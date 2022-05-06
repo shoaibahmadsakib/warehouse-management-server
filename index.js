@@ -25,11 +25,8 @@ async function run() {
   try {
     await client.connect();
     const userCollection = client.db("warehouse").collection("userinfo");
-    const personalCollection = client.db("warehouse").collection("myitem");
 
     app.get("/userinfo", async (req, res) => {
-      const email = req.query.email;
-
       const query = {};
       const cursor = userCollection.find(query);
       const users = await cursor.toArray();
@@ -48,22 +45,8 @@ async function run() {
       const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: "1d",
       });
-      res.send({accessToken});
+      res.send({ accessToken });
     });
-
-    // app.delete("/myitem/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: ObjectId(id) };
-    //   const result = await personalCollection.deleteOne(query);
-    //   res.send(result);
-    // });
-
-    // app.get("/myitem/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: ObjectId(id) };
-    //   const result = await userCollection.findOne(query);
-    //   res.send(result);
-    // });
 
     // get id
     app.delete("/userinfo/:id", async (req, res) => {
@@ -88,11 +71,7 @@ async function run() {
       const options = { upsert: true };
       const updateDoct = {
         $set: {
-          // name: updateUser.name,
-          // describtion: updateUser.describtion,
-          // price: updateUser.email,
           quantity: updateUser.quantity,
-          // image: updateUser.image,
         },
       };
       const result = await userCollection.updateOne(
@@ -102,39 +81,6 @@ async function run() {
       );
       res.send(result);
     });
-
-    //inventory
-    // app.put("/userinfo/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const updateUser = req.body;
-    //   const filter = { _id: ObjectId(id) };
-    //   const options = { upsert: true };
-    //   const updateDoct = {
-    //     $set: {
-
-    //       quantity: updateUser.quantity,
-
-    //     },
-    //   };
-    //   const result = await userCollection.updateOne(
-    //     filter,
-    //     updateDoct,
-    //     options
-    //   );
-    //   res.send(result);
-    // });
-    // app.get("/userinfo/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const query = { _id: ObjectId(id) };
-    //   const result = await userCollection.findOne(query);
-    //   res.send(result);
-    // });
-
-    // app.post("increment/:id") ,async (req, res) => {
-    //   const { id } = req.params;
-    //   collection.updateOne({ _id: id }, { $inc: { views: 1 } });
-    //   return res.status(200).json({ msg: "OK" });
-    // };
   } finally {
   }
 }
@@ -149,6 +95,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
-
-//warehouse
-//yGGTnsPqCXmLAVTH
