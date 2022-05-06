@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 //for connect front end using middlewire cors
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const ObjectId = require("mongodb").ObjectId;
@@ -25,27 +26,30 @@ async function run() {
     await client.connect();
     const userCollection = client.db("warehouse").collection("userinfo");
     const personalCollection = client.db("warehouse").collection("myitem");
-   
 
-   app.get("/userinfo", async (req, res) => {
-      const email =req.query.email;
-      
+    app.get("/userinfo", async (req, res) => {
+      const email = req.query.email;
+
       const query = {};
       const cursor = userCollection.find(query);
       const users = await cursor.toArray();
       res.send(users);
     });
 
-   
     app.post("/userinfo", async (req, res) => {
       const newService = req.body;
       const result = await userCollection.insertOne(newService);
       res.send(result);
     });
 
-
-   
-
+    ///AUTH
+    app.post("/login", async (req, res) => {
+      const user = req.body;
+      const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "1d",
+      });
+      res.send({accessToken});
+    });
 
     // app.delete("/myitem/:id", async (req, res) => {
     //   const id = req.params.id;
@@ -54,7 +58,6 @@ async function run() {
     //   res.send(result);
     // });
 
-
     // app.get("/myitem/:id", async (req, res) => {
     //   const id = req.params.id;
     //   const query = { _id: ObjectId(id) };
@@ -62,7 +65,7 @@ async function run() {
     //   res.send(result);
     // });
 
-   // get id
+    // get id
     app.delete("/userinfo/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -108,9 +111,9 @@ async function run() {
     //   const options = { upsert: true };
     //   const updateDoct = {
     //     $set: {
-          
+
     //       quantity: updateUser.quantity,
-        
+
     //     },
     //   };
     //   const result = await userCollection.updateOne(
@@ -126,8 +129,6 @@ async function run() {
     //   const result = await userCollection.findOne(query);
     //   res.send(result);
     // });
-
-
 
     // app.post("increment/:id") ,async (req, res) => {
     //   const { id } = req.params;
