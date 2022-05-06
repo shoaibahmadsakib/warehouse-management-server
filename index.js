@@ -44,21 +44,8 @@ async function run() {
     });
 
 
-     //myitem
-    //  app.get("/myitem", async (req, res) => {
-    //   const email =req.query.email;
-      
-    //   const query = {email:email};
-    //   const cursor = personalCollection.find(query);
-    //   const users = await cursor.toArray();
-    //   res.send(users);
-    // });
+   
 
-    // app.post("/myitem", async (req, res) => {
-    //   const newService = req.body;
-    //   const result = await personalCollection.insertOne(newService);
-    //   res.send(result);
-    // });
 
     // app.delete("/myitem/:id", async (req, res) => {
     //   const id = req.params.id;
